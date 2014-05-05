@@ -4,9 +4,7 @@ import urllib2, urllib
 import os
 import csv  
 import json
-#import chardet
 import requests
-#from chardet.universaldetector import UniversalDetector 
 
 '''
 Need reset system to utf8 encode way to if we want to decode big5 string
@@ -34,9 +32,8 @@ def force_decode(string, codecs=['utf8', 'big5']):
         except:
         	pass
 			
-def parse_cvs_to_json(handle_f, output_file, char_set):
+def parse_cvs_to_json(handle_f, char_set):
 	change_index = 0
-	jsonf = open(output_file, 'w')  
 	rows = []
 	for row in csv.reader(handle_f):
 		if 1: #change_index not in (0,2):  uncomment to skip what you don't want.
@@ -46,26 +43,30 @@ def parse_cvs_to_json(handle_f, output_file, char_set):
 			print "skip in " + str(change_index)
 		change_index += 1
 	out = json.dumps(rows, encoding=char_set)
-	print out
-	jsonf.write(out) 	
-	handle_f.close()  
+	#print out
+	handle_f.close()
+	return out
 
-def parse_file(source_type, source_file, output_file, char_set):
+def parse_file(source_type, source_file, char_set):
 	if source_type == 'csv':
 		f = open(source_file, 'r')
-		parse_cvs_to_json(f, output_file, char_set)
+		return parse_cvs_to_json(f, char_set)
 
-def parse_url(source_type, source_address, output_file, char_set):
+def parse_url(source_type, source_address, char_set):
 	if source_type == 'csv':
 		#Use request.get to deal with very long URL.
 		f = requests.get(source_address)
-		parse_cvs_to_json(f.iter_lines(), output_file, char_set)
+		return parse_cvs_to_json(f.iter_lines(), char_set)
 
-def parse_csv_url(source_address, output_file, char_set):
-	parse_url('csv', source_address, output_file, char_set)
+def parse_csv_url(source_address, char_set):
+	return parse_url('csv', source_address, char_set)
 
-def parse_csv_file(source_file, output_file, char_set):
-	parse_file('csv', source_file, output_file, char_set)
+def parse_csv_file(source_file, char_set):
+	return parse_file('csv', source_file, char_set)
+
+if __name__ == "__main__":
+	print parse_csv_url('http://data.gov.tw/iisi/logaccess?dataUrl=http%3A%2F%2Fitaiwan.gov.tw%2Ffunc%2Fhotspotlist.csv&type=CSV&nid=5962', 'big5')
+	print 'work!'
 
 '''
 def get_url_file(url_address, out_file_name, char_set):

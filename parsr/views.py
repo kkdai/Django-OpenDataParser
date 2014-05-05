@@ -2,11 +2,18 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.template import Context, loader	
 from django.http import HttpResponseRedirect
-#import os
+from parse_tool import *
 
 def index(request):
 	context = {'snippets_list': 'test'}
 	return render(request, 'index.html', context)
 	#return HttpResponse(TEMPLATE_DIRS)
 def parse(request):
-	return HttpResponse("test!")
+	url_name = request.POST['url_name']
+	skip_rows = request.POST['skip_rows']
+	char_set = request.POST['char_set']
+	print url_name
+	#skip_rows = request.POST['skip_rows']
+	#print skip_rowsx
+	out = parse_csv_url(url_name, char_set)
+	return HttpResponse(parse_csv_url(url_name, char_set))
