@@ -5,6 +5,13 @@ import os
 import csv  
 import json
 import requests
+import sys
+
+try:
+    from pyquery import PyQuery as pq
+except ImportError:
+    print "pip install pyquery"
+    sys.exit(1)
 
 '''
 Need reset system to utf8 encode way to if we want to decode big5 string
@@ -22,66 +29,62 @@ def whatisthis(s):
     else:
         print "not a string"
 '''
-Force trance code for string codec.
+Force decode for string codec.
 '''
 def force_decode(string, codecs=['utf8', 'big5']):
     for i in codecs:
         try:
-        	#print str(i)
             return string.decode(i)
         except:
-        	pass
-			
-def parse_cvs_to_json(handle_f, char_set):
-	change_index = 0
-	rows = []
-	for row in csv.reader(handle_f):
-		if 1: #change_index not in (0,2):  uncomment to skip what you don't want.
-			#print force_decode(row[1])
-			rows.append(row)
-		else:
-			print "skip in " + str(change_index)
-		change_index += 1
-	out = json.dumps(rows, encoding=char_set)
-	#print out
-	handle_f.close()
-	return out
+            pass
+'''
+Force encoding  for string codec.
+'''
+def force_encode_json(json_content, json_encode = ['utf8', 'big5']):
+    for i in json_encode:
+           try:
+              return json.dumps(json_content, encoding=i)
+           except:
+              pass
 
-def parse_file(source_type, source_file, char_set):
-	if source_type == 'csv':
-		f = open(source_file, 'r')
-		return parse_cvs_to_json(f, char_set)
+def parse_cvs_to_json(handle_f, skip_lines):
+    change_index = 0
+    rows = []
+    out = []
+    for row in csv.reader(handle_f):
+        if 1: #change_index not in (0,2):  uncomment to skip what you don't want.
+            #print force_decode(row[1])
+            rows.append(row)
+        else:
+            print "skip in " + str(change_index)
+        change_index += 1
+    out = force_encode_json(rows)
+    return out
 
-def parse_url(source_type, source_address, char_set):
-	if source_type == 'csv':
-		#Use request.get to deal with very long URL.
-		f = requests.get(source_address)
-		return parse_cvs_to_json(f.iter_lines(), char_set)
+def parse_file(source_type, source_file, skip_lines):
+    if source_type == 'csv':
+        f = open(source_file, 'r')
+        return parse_cvs_to_json(f, skip_lines)
 
-def parse_csv_url(source_address, char_set):
-	return parse_url('csv', source_address, char_set)
+def parse_url(source_type, source_address, skip_lines):
+    if source_type == 'csv':
+        #Use request.get to deal with very long URL.
+        f = requests.get(source_address)
+        return parse_cvs_to_json(f.iter_lines(), skip_lines)
 
-def parse_csv_file(source_file, char_set):
-	return parse_file('csv', source_file, char_set)
+def parse_csv_url(source_address, skip_lines):
+    return parse_url('csv', source_address, skip_lines)
+
+def parse_csv_file(source_file, skip_lines):
+    return parse_file('csv', source_file, skip_lines)
 
 if __name__ == "__main__":
-	print parse_csv_url('http://data.gov.tw/iisi/logaccess?dataUrl=http%3A%2F%2Fitaiwan.gov.tw%2Ffunc%2Fhotspotlist.csv&type=CSV&nid=5962', 'big5')
-	print 'work!'
-
-'''
-def get_url_file(url_address, out_file_name, char_set):
-	f = urllib2.urlopen(url_address)
-	out = json.dumps( [row for row in csv.reader(f) ], encoding=char_set) 
-	#print "JSON parsed!"  
-	jsonf = open(out_file_name, 'w')  
-	jsonf.write(out) 
-'''
-
-'''
-url_address = 'http://data.gov.tw/iisi/logaccess?dataUrl=http%3A%2F%2Fwww.thb.gov.tw%2FTM%2FFiles%2FWebpage%2F201404%2F16_%25E5%2585%25A8%25E5%259C%258B%25E5%25A4%25A7%25E5%25AE%25A2%25E8%25BB%258A%25E7%25A6%2581%25E8%25A1%258C%25E8%25B7%25AF%25E6%25AE%25B5-utf.csv&type=CSV&nid=6794'
-parse_csv_url(url_address, 'url2.json', 'utf8')
-print 'work!'
-'''
+    #url_address = 'http://data.gov.tw/iisi/logaccess?dataUrl=http%3A%2F%2Fwww.thb.gov.tw%2FTM%2FFiles%2FWebpage%2F201404%2F16_%25E5%2585%25A8%25E5%259C%258B%25E5%25A4%25A7%25E5%25AE%25A2%25E8%25BB%258A%25E7%25A6%2581%25E8%25A1%258C%25E8%25B7%25AF%25E6%25AE%25B5-utf.csv&type=CSV&nid=6794'
+    #parse_csv_url(url_address, 'url2.json', 'utf8')
+    print parse_csv_url('http://data.gov.tw/iisi/logaccess?dataUrl=http%3A%2F%2Fitaiwan.gov.tw%2Ffunc%2Fhotspotlist.csv&type=CSV&nid=5962', '')
+    #parse_csv_file('data/workers_disease.csv', '')
+    print 'work!'
+    
 
 ''' Sample file from OpenData.gov
 #open big5 csv
