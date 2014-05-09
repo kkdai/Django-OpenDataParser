@@ -12,7 +12,5 @@ def parse(request):
 	url_name = request.POST['url_name']
 	skip_rows = request.POST['skip_rows']
 	print url_name
-	#skip_rows = request.POST['skip_rows']
-	#print skip_rowsx
-	out = parse_csv_url(url_name, '')
-	return HttpResponse(parse_csv_url(url_name, ''))
+	print skip_rows
+	return HttpResponse(parse_csv_url(url_name, skip_rows))

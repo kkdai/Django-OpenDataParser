@@ -48,11 +48,15 @@ def force_encode_json(json_content, json_encode = ['utf8', 'big5']):
               pass
 
 def parse_cvs_to_json(handle_f, skip_lines):
+    print skip_lines
+    skip_list = []
+    for i in skip_lines.split(' '):
+        print i
     change_index = 0
     rows = []
     out = []
     for row in csv.reader(handle_f):
-        if 1: #change_index not in (0,2):  uncomment to skip what you don't want.
+        if str(change_index) not in skip_lines.split(' '):  #uncomment to skip what you don't want.
             #print force_decode(row[1])
             rows.append(row)
         else:
@@ -81,7 +85,7 @@ def parse_csv_file(source_file, skip_lines):
 if __name__ == "__main__":
     #url_address = 'http://data.gov.tw/iisi/logaccess?dataUrl=http%3A%2F%2Fwww.thb.gov.tw%2FTM%2FFiles%2FWebpage%2F201404%2F16_%25E5%2585%25A8%25E5%259C%258B%25E5%25A4%25A7%25E5%25AE%25A2%25E8%25BB%258A%25E7%25A6%2581%25E8%25A1%258C%25E8%25B7%25AF%25E6%25AE%25B5-utf.csv&type=CSV&nid=6794'
     #parse_csv_url(url_address, 'url2.json', 'utf8')
-    print parse_csv_url('http://data.gov.tw/iisi/logaccess?dataUrl=http%3A%2F%2Fitaiwan.gov.tw%2Ffunc%2Fhotspotlist.csv&type=CSV&nid=5962', '')
+    print parse_csv_url('http://data.gov.tw/iisi/logaccess?dataUrl=http%3A%2F%2Fitaiwan.gov.tw%2Ffunc%2Fhotspotlist.csv&type=CSV&nid=5962', '0 1')
     #parse_csv_file('data/workers_disease.csv', '')
     print 'work!'
     
