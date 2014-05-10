@@ -1,0 +1,42 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<title>OpenData XML Parser Tool</title>	
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<link rel="stylesheet" type="text/css" href="style.css" />
+</head>
+
+<body>
+		<p>Input the Open Data XML URL to parse</p>
+		<form method="post" action="post_xml">
+			{% csrf_token %}
+			<label>Name:</label> <input type="text" name="url_name" />  url addres "http://XXX"<br>
+			<label>xml tyoe:</label> <input type="text" name="xml_type" /> xml type "1 or 2", default: 2<br>
+			<input type="submit" name="submit" value="Submit" />
+		</form>						
+		<br>
+		test data :
+		<ul>
+			<li>
+				URL=http://cloud.culture.tw/frontsite/trans/emapOpenDataAction.do?method=exportEmapXML&typeId=B
+			</li>
+			<li>
+				<ul><li> XML type: 1
+					    <ul><li> 
+					        	<買賣>
+            					<ul><li> <鄉鎮市區>北區</鄉鎮市區></li></ul>
+					            <ul><li> <交易標的>房地(土地+建物)</交易標的></li></ul>
+					        	</買賣>
+					    </li></ul>
+				</li></ul>
+				<ul><li> XML type: 2
+					    <ul><li> 
+					    	    <pre><Info groupTypeName="工藝之家" mainTypeName="工藝之家" /></pre>
+					    </li></ul>
+				</li></ul>					
+			</li>
+		</ul>
+</body>
+
+</html>
